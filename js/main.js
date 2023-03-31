@@ -23,6 +23,8 @@ let contador = 0;
 let totalProductos = 0;
 let costoTotal = 0;
 
+let datos = []; //Aqui se almacenaran los datos de mi tabla
+
 
 btnClear.addEventListener("click", function(event){
     event.preventDefault();
@@ -117,6 +119,15 @@ let row= `<tr>
             <td>${txtNumber.value}</td>
             <td>$ ${precio}</td>
         </tr>`;
+        let elemento = `{
+                            "id" : ${contador},
+                            "nombre" : "${txtName.value}",
+                            "cantidad" : "${txtNumber.value}",
+                            "precio" :  "${precio}"
+                             }`;
+        datos.push (JSON.parse(elemento) );
+
+        localStorage.setItem("datos", JSON.stringify(datos) );
 
         cuerpoTabla[0].insertAdjacentHTML("beforeend",row);
         contadorProductos.innerText = contador;
@@ -124,9 +135,16 @@ let row= `<tr>
         productosTotal.innerText = totalProductos;
         costoTotal += precio * parseFloat(txtNumber.value);
         precioTotal.innerText=`$ ${costoTotal.toFixed(2)}`; 
-        localStorage.setItem("contadorProductos",contador);
-        localStorage.setItem("totalProductos", totalProductos);
-        localStorage.setItem("costoTotal", costoTotal.toFixed(2));
+
+        let resumen = `{"contadorProductos": ${contador},
+                        "totalProductos"   : ${totalProductos},
+                        "costoTotal"       : ${costoTotal.toFixed(2)} }`;
+        localStorage.setItem("resumen", resumen);
+
+        // localStorage.setItem("contadorProductos",contador);
+        // localStorage.setItem("totalProductos", totalProductos);
+        // localStorage.setItem("costoTotal", costoTotal.toFixed(2));
+
         txtName.value="";
         txtNumber.value="";
         txtName.focus(); //limpia los cambos con los de arriba y pone el foco en ese campo
@@ -150,24 +168,52 @@ txtName.addEventListener("blur",function(event){
 }); //txtName.blur
 
 window.addEventListener("load", function (event){
-    if(localStorage.getItem("contadorProductos")==null){
-       localStorage.getItem("contadorProductos", "0");
-    }//if
+    if (localStorage.getItem("resumen")==null){
+        let resumen = `{"contadorProductos" : ${contador},
+                        "totalProductos"    : ${totalProductos},
+                        "costoTotal"        : ${costoTotal.toFixed(2)} }`;
+    localStorage.setItem("resumen", resumen);
 
-    if(localStorage.getItem("totalProductos")==null){
-       localStorage.getItem("totalProductos", "0");
-    } //if
+    }// If
 
-    if(localStorage.getItem("costoTotal")==null){
-        localStorage.getItem("costoTotal", "0.0")
-
-    }//if
-
+    let res = JSON.parse(localStorage.getItem("resumen"));
+    if (localStorage.getItem("datos")!=null){
+        datos = JSON.parse(localStorage.getItem("datos"));
+        
+        datos.forEach(r => {
 
 
-    contador = parseInt(localStorage.getItem("contadorProductos"));
-    totalProductos = localStorage.getItem("totalProductos");
-    costoTotal = parseFloat(localStorage.getItem("costoTotal"));
+            let row= `<tr>  
+            <th>${r. id}</th>
+            <td>${r. nombre}</td>
+            <td>${r. cantidad}</td>
+            <td>$ ${r. precio}</td>
+        </tr>`;
+
+            cuerpoTabla[0].insertAdjacentHTML("beforeend",row);
+        });
+
+
+    }// !=null
+
+    // if(localStorage.getItem("contadorProductos")==null){
+    //    localStorage.getItem("contadorProductos", "0");
+    // }//if
+
+    // if(localStorage.getItem("totalProductos")==null){
+    //    localStorage.getItem("totalProductos", "0");
+    // } //if
+
+    // if(localStorage.getItem("costoTotal")==null){
+    //     localStorage.getItem("costoTotal", "0.0")
+
+    // }//if
+
+
+
+    contador = res.contadorProductos; //parseInt(localStorage.getItem("contadorProductos"));
+    totalProductos = res.totalProductos; //parseInt(localStorage.getItem("totalProductos"));
+    costoTotal = res.costoTotal; //parseFloat(localStorage.getItem("costoTotal"));
 
     contadorProductos.innerText = contador;
     productosTotal.innerText = totalProductos;
