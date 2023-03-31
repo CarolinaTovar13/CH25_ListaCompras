@@ -36,7 +36,7 @@ btnClear.addEventListener("click", function(event){
     contadorProductos.innerHTML ="0";
     productosTotal.innerHTML ="0";
     precioTotal.innerHTML = "$0";
-    
+
     localStorage.setItem("contadorProductos",contador);
     localStorage.setItem("totalProductos", totalProductos);
     localStorage.setItem("costoTotal", costoTotal.toFixed(2));
@@ -47,7 +47,7 @@ btnClear.addEventListener("click", function(event){
 }); //btnClear
 
 function validarCantidad(){
-    if (txtNumber.value.lenght ==0){
+    if (txtNumber.value.length == 0){
         return false;
     } //if
 
@@ -60,16 +60,17 @@ function validarCantidad(){
     }//if
 
     return true;
-}//validarCantidad cumpla con longitud, tipo de dato y sea numero
+};//validarCantidad cumpla con longitud, tipo de dato y sea numero
 
 function getPrecio(){
    return Math.floor(Math.random()*50*100)/100;
+
 }// getPrecio numeros al azar, el 50 es el floor y el *100/100 deja 2 decimales
 
 btnAdd.addEventListener("click", function(event){
     event.preventDefault();
     isValid=true;
-    console.log(getPrecio());
+    // console.log(getPrecio());
     clearTimeout(idTimeout);
     alertValidacionesTexto.innerHTML="";  //Este hace que se limpie el mensaje con cada click y no lo duplique
     alertValidaciones.style.display="none";
@@ -118,11 +119,11 @@ let row= `<tr>
         </tr>`;
 
         cuerpoTabla[0].insertAdjacentHTML("beforeend",row);
-        contadorProductos.innerHTML = contador;
+        contadorProductos.innerText = contador;
         totalProductos += parseFloat(txtNumber.value);
-        productosTotal.innerHTML = totalProductos;
+        productosTotal.innerText = totalProductos;
         costoTotal += precio * parseFloat(txtNumber.value);
-        precioTotal.innerHTML=`$ ${costoTotal.toFixed(2)}`; 
+        precioTotal.innerText=`$ ${costoTotal.toFixed(2)}`; 
         localStorage.setItem("contadorProductos",contador);
         localStorage.setItem("totalProductos", totalProductos);
         localStorage.setItem("costoTotal", costoTotal.toFixed(2));
@@ -135,7 +136,7 @@ let row= `<tr>
 });  //btnAgregar click
 
 
-txtNumber.addEventListener("blur",function(event){
+txtNumber.addEventListener("blur", function(event){
     event.preventDefault();
     txtNumber.value = txtNumber.value.trim();
 
@@ -148,5 +149,31 @@ txtName.addEventListener("blur",function(event){
 
 }); //txtName.blur
 
+window.addEventListener("load", function (event){
+    if(localStorage.getItem("contadorProductos")==null){
+       localStorage.getItem("contadorProductos", "0");
+    }//if
 
+    if(localStorage.getItem("totalProductos")==null){
+       localStorage.getItem("totalProductos", "0");
+    } //if
+
+    if(localStorage.getItem("costoTotal")==null){
+        localStorage.getItem("costoTotal", "0.0")
+
+    }//if
+
+
+
+    contador = parseInt(localStorage.getItem("contadorProductos"));
+    totalProductos = localStorage.getItem("totalProductos");
+    costoTotal = parseFloat(localStorage.getItem("costoTotal"));
+
+    contadorProductos.innerText = contador;
+    productosTotal.innerText = totalProductos;
+    precioTotal.innerText = `$ ${costoTotal}`;
+
+
+
+});
 
